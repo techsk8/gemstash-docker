@@ -1,33 +1,45 @@
-version: '2'
+---
+
 services:
-  proxy:
-    build:
-      context: ./proxy
-    ports:
-    - 8000:8080
-    depends_on:
-    - gemstash
-    environment:
-      PROXY_TARGET_URL: "http://gemstash:9292"
-      IPS_ACCESS_WHITELIST: 172.18.0.1
-      BASIC_AUTH_TOKEN: abcd
   gemstash:
-    build: .
+    image: gemstash:latest
+    container_name: gemstash
     ports:
-    - 9292:9292
+      - 8080:8080
     volumes:
-    - ./gemstash-data:/var/lib/gemstash
+      - ./gemstash-data:/var/gemstash-data
+    env_file:
+      - .env
     depends_on:
-    - mariadb
-    environment:
-      DB_HOST: mariadb
-      DB_USER: gemstash
-      DB_PASSWORD: gemstash
-      DB_NAME: gemstash
-  mariadb:
-    image: mariadb:5.5
-    environment:
-      MYSQL_RANDOM_ROOT_PASSWORD: 1
-      MYSQL_USER: gemstash
-      MYSQL_PASSWORD: gemstash
-      MYSQL_DATABASE: gemstash
+      postgres:
+        condition: service_healthy
+      memcached:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:alpine
+    pull_policy: always
+    container_name: postgres
+    env_file:
+      - .env
+    expose:
+      - 5432
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}'"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+
+  memcached:
+    image: memcached:alpine
+    pull_policy: always
+    container_name: memcached
+    expose:
+      - 11211
+    healthcheck:
+      test: ["CMD-SHELL", "echo 'version' | nc -vn -w 1 127.0.0.1 11211"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s

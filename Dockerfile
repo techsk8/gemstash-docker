@@ -1,18 +1,38 @@
-FROM ruby:2.4-alpine
-LABEL maintainer="nine.ch <engineering@nine.ch>"
+FROM ruby:3.2.2-alpine
 
-RUN mkdir -p /app /var/lib/gemstash && \
-    chmod a+w /var/lib/gemstash
+LABEL maintainer="techsk8 <admin@techsk8.com>"
+
+ARG BUILD_BASE_VERSION
+ARG CURL_VERSION
+ARG GIT_VERSION
+ARG LIBPQ_DEV_VERSION
+ARG OPENSSL_VERSION
+ARG SQLITE_DEV_VERSION
+
+RUN mkdir /app /var/gemstash-data && \
+    chmod a+w /var/gemstash-data
+
 WORKDIR /app
 
-COPY Gemfile Gemfile.lock /app/
+COPY Gemfile config.yml.erb ./
 
-RUN apk add --no-cache build-base openssl git sqlite-dev mariadb-dev \
-    && bundle install -j2 --deployment \
-    && apk del build-base git
+COPY docker-entrypoint.sh /usr/local/bin/
 
-COPY . /app/
+RUN apk add --no-cache \
+    build-base=${BUILD_BASE_VERSION} \
+    curl=${CURL_VERSION} \
+    git=${GIT_VERSION} \
+    libpq-dev=${LIBPQ_DEV_VERSION} \
+    openssl=${OPENSSL_VERSION} \
+    sqlite-dev=${SQLITE_DEV_VERSION}
+
+RUN gem update --system && \
+    bundle install
 
 VOLUME /var/lib/gemstash
-EXPOSE 9292
-CMD [ "/app/bin/start.sh" ]
+
+EXPOSE 8080
+
+HEALTHCHECK CMD curl -s http://localhost:8080/health
+
+CMD ["docker-entrypoint.sh"]
