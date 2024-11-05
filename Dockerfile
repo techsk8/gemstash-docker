@@ -19,12 +19,12 @@ COPY Gemfile config.yml.erb ./
 COPY docker-entrypoint.sh /usr/local/bin/
 
 RUN apk add --no-cache \
-    build-base=${BUILD_BASE_VERSION} \
-    curl=${CURL_VERSION} \
-    git=${GIT_VERSION} \
-    libpq-dev=${LIBPQ_DEV_VERSION} \
-    openssl=${OPENSSL_VERSION} \
-    sqlite-dev=${SQLITE_DEV_VERSION}
+    build-base\
+    curl\
+    git\
+    libpq-dev\
+    openssl\
+    sqlite-dev
 
 RUN gem update --system && \
     bundle install

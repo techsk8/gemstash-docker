@@ -1,26 +1,22 @@
-# Gemstash
+# Gemstash Docker Image
 
-This repository contains everything to build a Docker image for [Bundler's Gemstash](https://github.com/bundler/gemstash). With Gemstash you can run your private Rubygems mirror or a gem server to host your private Rubygems.
+This repository contains everything to build a Docker image for [Gemstash](https://github.com/rubygems/gemstash). With Gemstash you can run your private Rubygems mirror or a gem server to host your private Rubygems.
 
-## Development
+## Local Development
 
 Create a .env file with the following:
 
 ```bash
 cat << EOF > .env
-BUILD_BASE_VERSION=0.5-r3
-CURL_VERSION=8.9.1-r1
-GIT_VERSION=2.43.5-r0
-LIBPQ_DEV_VERSION=16.4-r0
-OPENSSL_VERSION=3.1.7-r1
-SQLITE_DEV_VERSION=3.44.2-r0
-
 DB_HOST=postgres
 DB_PASSWORD=gemstash
 DB_USER=gemstash
 DB_DB=gemstash
 
-MEMCACHED_SERVERS=memcached1:11211
+##
+## OPTIONAL TO USE 
+##
+# MEMCACHED_SERVERS=memcached1:11211
 EOF
 ```
 
@@ -28,13 +24,7 @@ Start the container:
 
 ```bash
 env $(cat .env) \
-docker build . -t gemstash:latest \
-    --build-arg BUILD_BASE_VERSION \
-    --build-arg CURL_VERSION \
-    --build-arg GIT_VERSION \
-    --build-arg LIBPQ_DEV_VERSION \
-    --build-arg OPENSSL_VERSION \
-    --build-arg SQLITE_DEV_VERSION
+docker build . -t gemstash:latest
 
 docker compose up -d
 ```
@@ -108,8 +98,7 @@ gemstash  | [2024-10-28 12:25:30 +0000] - INFO - Gem minitest-5.25.1 is not cach
 
 ## Authorization key [Optional]
 
-Create an authorization key:
-Go into the `gemstash` container and run the following command:
+To reate an authorization key go into the `gemstash` container and run the following command:
 
 ```bash
 docker compose exec -it gemstash /bin/sh
