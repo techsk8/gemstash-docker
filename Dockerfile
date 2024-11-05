@@ -9,8 +9,8 @@ ARG LIBPQ_DEV_VERSION
 ARG OPENSSL_VERSION
 ARG SQLITE_DEV_VERSION
 
-RUN mkdir /app /var/gemstash-data && \
-    chmod a+w /var/gemstash-data
+RUN mkdir -p /app/gemstash-data && \
+    chmod a+w /app/gemstash-data
 
 WORKDIR /app
 
@@ -29,7 +29,7 @@ RUN apk add --no-cache \
 RUN gem update --system && \
     bundle install
 
-VOLUME /var/lib/gemstash
+VOLUME /app/gemstash-data
 
 EXPOSE 8080
 
