@@ -7,7 +7,7 @@ services:
     ports:
       - 8080:8080
     volumes:
-      - ./gemstash-data:/var/gemstash-data
+      - ./gemstash-data:/app/gemstash-data
     env_file:
       - .env
     depends_on:

@@ -13,12 +13,15 @@ DB_PASSWORD=gemstash
 DB_USER=gemstash
 DB_DB=gemstash
 
-##
-## OPTIONAL TO USE 
-##
-# MEMCACHED_SERVERS=memcached1:11211
+POSTGRES_USER=gemstash
+POSTGRES_DB=gemstash
+POSTGRES_PASSWORD=gemstash
+
+MEMCACHED_SERVERS=memcached:11211
 EOF
 ```
+
+NOTE: The `MEMCACHED_SERVERS` env variable is optional. If you want gemstash to use the RAM memory for caching, which it does by default, then just remove the above variable from the `.env` file.
 
 Start the container:
 
@@ -96,7 +99,7 @@ gemstash  | [2024-10-28 12:25:30 +0000] - INFO - Gem minitest-5.25.1 is not cach
 .
 ```
 
-## Authorization key [Optional]
+## [Optional] Authorization key
 
 To reate an authorization key go into the `gemstash` container and run the following command:
 

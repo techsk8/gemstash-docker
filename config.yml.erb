@@ -5,8 +5,6 @@
 
 # gemstash
 :base_path: "/app/gemstash-data"
-:cache_type: memory
-:cache_max_size: 6000
 :protected_fetch: false
 
 # db, if env DB_HOST is not set sqlite will be used instead
@@ -21,6 +19,7 @@
 <% end %>
 
 # cache
+:cache_expiration: 86400
 <% if ENV['MEMCACHED_SERVERS'] %>
 :cache_type: memcached
 :memcached_servers: <%= ENV['MEMCACHED_SERVERS'] %>

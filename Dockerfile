@@ -2,13 +2,6 @@ FROM ruby:3.2.2-alpine
 
 LABEL maintainer="techsk8 <admin@techsk8.com>"
 
-ARG BUILD_BASE_VERSION
-ARG CURL_VERSION
-ARG GIT_VERSION
-ARG LIBPQ_DEV_VERSION
-ARG OPENSSL_VERSION
-ARG SQLITE_DEV_VERSION
-
 RUN mkdir -p /app/gemstash-data && \
     chmod a+w /app/gemstash-data
 
